@@ -1,6 +1,9 @@
+const webpack = require('webpack');
 const path = require('path');
 const plugins = require('./webpack.plugins.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const ReactRefreshTypescript = require('react-refresh-typescript');
 
 module.exports = ( env ) => {
   const isDev = (env && env.production ? false : true) 
@@ -19,7 +22,9 @@ module.exports = ( env ) => {
         template: path.resolve(__dirname, 'src/index.html'),
         title: 'NBA Scores - SVANE',
       }),
-    ],
+      new webpack.HotModuleReplacementPlugin(), // global HMR
+      new ReactRefreshWebpackPlugin()
+    ].filter(Boolean),
     module: {
       rules: [
         {
@@ -28,7 +33,10 @@ module.exports = ( env ) => {
           use: {
             loader: 'ts-loader',
             options: {
-              transpileOnly: true
+              transpileOnly: true,
+              getCustomTransformers: () => ({
+                before: isDev ? [ ReactRefreshTypescript() ] : [],
+              }),
             },
           },
         },
@@ -42,6 +50,7 @@ module.exports = ( env ) => {
     devServer: {
       contentBase: './dist',
       port: 3000,
+      hot: true,
     },
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
