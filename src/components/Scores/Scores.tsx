@@ -40,16 +40,9 @@ export const Scores: React.FC = (): ReactElement | null => {
   const NbaApi: Nba = new Nba();
   const league = NbaApi.api('league');
 
-  const getScores = async () => {
-    fs.readFile(path.resolve(__dirname, '../../../../../../scoreboard.json'), { encoding: 'utf8' }, ( (err, data) => {
-      console.log(err);
-      console.log(data);
-      if(!err) {
-        let scoreboard: Scoreboard = JSON.parse(data);
-        setScoreboard(scoreboard)
-      }
-    }));
-    // const scoreboard = await league.scoreboard(gameDate);
+  const getScores = async ():Promise<void> => {
+    const scoreboard = await league.scoreboard(gameDate);
+    setScoreboard(scoreboard);
   }
 
   useEffect( () => {
