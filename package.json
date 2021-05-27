@@ -11,6 +11,7 @@
     "dev:electron": "webpack --config webpack.electron.config.js && yarn start",
     "dev:renderer": "webpack serve --config webpack.renderer.config.js",
     "dev": "concurrently -k -s first \"yarn dev:electron\" \"yarn dev:renderer\" -k ",
+    "build": "webpack",
     "watch": "yarn dev-main && yarn dev-renderer"
   },
   "devDependencies": {
