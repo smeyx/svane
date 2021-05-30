@@ -8,11 +8,11 @@
   "license": "WTFPL",
   "scripts": {
     "start": "electron dist/main.js",
-    "dev:electron": "webpack --config webpack.electron.config.js && yarn start",
+    "dev:electron": "webpack --config webpack.electron.config.js && npm start",
     "dev:renderer": "webpack serve --config webpack.renderer.config.js",
-    "dev": "concurrently -k -s first \"yarn dev:electron\" \"yarn dev:renderer\" -k ",
+    "dev": "concurrently -k -s first \"npm run dev:electron\" \"npm run dev:renderer\" -k ",
     "build": "webpack",
-    "watch": "yarn dev-main && yarn dev-renderer"
+    "watch": "npm run dev:electron && npm run dev:renderer"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",

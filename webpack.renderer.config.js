@@ -43,7 +43,11 @@ module.exports = ( env ) => {
         {
           test: /\.css$/,
           use: [ { loader: 'style-loader' }, { loader: 'css-loader' }],
-        }
+        },
+        {
+          test: /.(png|jpg|jpeg|svg)$/i,
+          type: 'asset/resource',
+        },
       ],
     },
     target: 'electron-renderer',

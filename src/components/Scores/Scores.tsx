@@ -41,8 +41,17 @@ export const Scores: React.FC = (): ReactElement | null => {
   const league = NbaApi.api('league');
 
   const getScores = async ():Promise<void> => {
-    const scoreboard = await league.scoreboard(gameDate);
-    setScoreboard(scoreboard);
+    fs.readFile(path.resolve(__dirname, '../../../../../../scoreboard.json'), { encoding: 'utf8' }, ( (err, data) => {
+      console.log(err);
+      console.log(data);
+      if(!err) {
+        let scoreboard: Scoreboard = JSON.parse(data);
+        setScoreboard(scoreboard)
+      }
+    }));
+
+    // const scoreboard = await league.scoreboard(gameDate);
+    // setScoreboard(scoreboard);
   }
 
   useEffect( () => {
@@ -72,14 +81,14 @@ export const Scores: React.FC = (): ReactElement | null => {
             return ( 
               <GameBox key={ game.gameId } >
                 <TeamScoreBox key={ game.vTeam.teamId } >
-                  <img style={{ marginRight: '0.7em' }} src={ `https://cdn.nba.com/logos/nba/${ game.vTeam.teamId }/global/D/logo.svg` } height={ 64 } width={ 64 }/>
+                  <img style={{ marginRight: '0.7em' }} src={ `../../assets/images/${ game.vTeam.teamId }.svg` } height={ 64 } width={ 64 }/>
                   { game.vTeam.triCode } { game.vTeam.score }
                 </TeamScoreBox>
   
                 <FillerElement />
                 <TeamScoreBox>
                   { game.hTeam.score } { game.hTeam.triCode }
-                  <img style={{ marginLeft: '0.7em' }} src={ `https://cdn.nba.com/logos/nba/${ game.hTeam.teamId }/global/D/logo.svg` } height={ 64 } width={ 64 }/>
+                  <img style={{ marginLeft: '0.7em' }} src={ `../../assets/images/${ game.hTeam.teamId }.svg` } height={ 64 } width={ 64 }/>
                 </TeamScoreBox>
               </GameBox>
             );
