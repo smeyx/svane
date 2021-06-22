@@ -1,32 +1,39 @@
 import React, { useEffect, useState, ReactElement } from "react"
 import styled from 'styled-components';
-import { Scoreboard, Game } from './scores-declarations';
+import { ScoreboardV3, Scoreboard, Game } from './scores-declarations';
 import Nba from '../../api';
 import * as fs from 'fs';
 import * as path from 'path';
+
+import Logo from '../../assets/images/1610612737.svg';
+
+console.log('logo ->', Logo);
 
 const ScoresBox = styled.div`
   margin-top: 10vh;
   display: flex;
   flex-direction: column;
-  width: 80vw;
-  height: 80vh;
+  min-width: 80vw;
+  min-height: 80vh;
 `;
 
 const GameBox = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 10vh;
+  flex-direction: column;
   margin: 0.2em 0;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 `;
 
 const TeamScoreBox = styled.div`
   display: flex;
+  flex-direction: row;
   align-items: center;
-  margin-left: 1em;
-  margin-right: 1em;
+`;
+
+const GameScoreBox = styled.div`
+  margin-left: 0.5em;
+  display: flex;
+  flex-direction: column;
 `;
 
 const FillerElement = styled.div`
@@ -41,12 +48,11 @@ export const Scores: React.FC = (): ReactElement | null => {
   const league = NbaApi.api('league');
 
   const getScores = async ():Promise<void> => {
-    fs.readFile(path.resolve(__dirname, '../../../../../../scoreboard.json'), { encoding: 'utf8' }, ( (err, data) => {
+    fs.readFile(path.resolve(__dirname, '../../../../../../scoreboardv3.json'), { encoding: 'utf8' }, ( (err, data) => {
       console.log(err);
-      console.log(data);
       if(!err) {
-        let scoreboard: Scoreboard = JSON.parse(data);
-        setScoreboard(scoreboard)
+        let scoreboard: ScoreboardV3 = JSON.parse(data);
+        setScoreboard(scoreboard.scoreboard)
       }
     }));
 
@@ -64,7 +70,7 @@ export const Scores: React.FC = (): ReactElement | null => {
     console.log(day);
     const nextDate = new Date();
     nextDate.setDate(day);
-    setGameDate(nextDate);
+    // setGameDate(nextDate);
   }
   
   return (
@@ -75,20 +81,24 @@ export const Scores: React.FC = (): ReactElement | null => {
           { gameDate.toLocaleDateString() }
           <a onClick={ () => handleDateChange( new Date().setDate(gameDate.getDate() - 1) ) }>{ '<' }</a>
           <a onClick={ () => handleDateChange( new Date().setDate(gameDate.getDate() + 1) ) }>{ '>' }</a>
+          <Logo />
         </p>
         { 
           scoreboard.games.map( (game: Game) => { 
             return ( 
               <GameBox key={ game.gameId } >
-                <TeamScoreBox key={ game.vTeam.teamId } >
-                  <img style={{ marginRight: '0.7em' }} src={ `../../assets/images/${ game.vTeam.teamId }.svg` } height={ 64 } width={ 64 }/>
-                  { game.vTeam.triCode } { game.vTeam.score }
+                <TeamScoreBox key={ game.awayTeam.teamId } >
+                  <img src={ `./assets/images/${ game.awayTeam.teamId }.svg` } height={ 64 } width={ 64 }/>
+                  <GameScoreBox>
+                    { game.awayTeam.score }
+                  </GameScoreBox>
                 </TeamScoreBox>
   
-                <FillerElement />
                 <TeamScoreBox>
-                  { game.hTeam.score } { game.hTeam.triCode }
-                  <img style={{ marginLeft: '0.7em' }} src={ `../../assets/images/${ game.hTeam.teamId }.svg` } height={ 64 } width={ 64 }/>
+                  <img src={ `./assets/images/${ game.homeTeam.teamId }.svg` } height={ 64 } width={ 64 }/>
+                  <GameScoreBox>
+                    { game.homeTeam.score }
+                  </GameScoreBox>
                 </TeamScoreBox>
               </GameBox>
             );

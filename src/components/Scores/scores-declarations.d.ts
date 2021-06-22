@@ -4,12 +4,29 @@ export type Player = {
   lastName: string;
 }
 
+export type LeaderStats = {
+  personId: string;
+  name: string;
+  jerseyNum: string;
+  position: string;
+  points: number;
+  rebounds: number;
+  assists: number;
+}
+
 export type Team = {
   teamId: string;
-  triCode: string;
-  win: number;
-  loss: number;
+  teamName: string;
+  teamCity: string;
+  teamTricode: string;
+  teamSlug: string;
+  wins: number;
+  losses: number;
   score: number;
+  seed: number;
+  inBonus: null | boolean;
+  timeoutsRemaining: number;
+  periods: Period[];
   linescore: number[];
 }
 
@@ -22,11 +39,9 @@ export type Arena = {
 }
 
 export type Period = {
-  current: number;
-  type: string;
-  maxRegular: number;
-  isHalftime: boolean;
-  isEndOfPeriod: boolean;
+  period: number;
+  periodType: 'REGULAR' | 'OVERTIME';
+  score: number;
 }
 
 export type GameDuration = {
@@ -34,23 +49,38 @@ export type GameDuration = {
   minutes: number;
 }
 
+export type Leaders = {
+  homeLeaders: LeaderStats;
+  awayLeader: LeaderStats;
+}
+
 export type Game = {
-  seasonYear: number;
   gameId: string;
-  arena: Arena;
-  isGameActivated: boolean;
-  startTimeUTC: Date;
-  gameUrlCode: string;
-  clock: string;
-  isBuzzerBeater: boolean;
-  attendance: number;
-  gameDuration: GameDuration;
-  period: Period;
-  vTeam: Team;
-  hTeam: Team;
+  gameCode: string;
+  gameStatus: number;
+  gameStatusText: string;
+  gameTimeUTC: Date;
+  gameEt: Date;
+  seriesGameNumber: string;
+  seriesText: string;
+  ifNecessary: boolean;
+  period: number;
+  gameClock: string;
+  // arena: Arena;
+  awayTeam: Team;
+  gameLeaders: Leaders
+  teamLeader: Leaders
+  homeTeam: Team;
 }
 
 export type Scoreboard = {
-  numGames: number;
+  gameDate: string;
+  leagueId: string;
+  leagueName: string;
   games: Game[];
+}
+
+export type ScoreboardV3 = {
+  meta: {};
+  scoreboard: Scoreboard;
 }

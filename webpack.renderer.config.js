@@ -45,8 +45,12 @@ module.exports = ( env ) => {
           use: [ { loader: 'style-loader' }, { loader: 'css-loader' }],
         },
         {
-          test: /.(png|jpg|jpeg|svg)$/i,
+          test: /\.(png|jpg|jpeg|svg)$/i,
           type: 'asset/resource',
+        },
+        {
+          test: /\.svg$/i,
+          use: [ { loader: '@svgr/webpack', options: { typescript: true } }],
         },
       ],
     },
