@@ -5,10 +5,6 @@ import Nba from '../../api';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import Logo from '../../assets/images/1610612737.svg';
-
-console.log('logo ->', Logo);
-
 const ScoresBox = styled.div`
   margin-top: 10vh;
   display: flex;
@@ -81,23 +77,31 @@ export const Scores: React.FC = (): ReactElement | null => {
           { gameDate.toLocaleDateString() }
           <a onClick={ () => handleDateChange( new Date().setDate(gameDate.getDate() - 1) ) }>{ '<' }</a>
           <a onClick={ () => handleDateChange( new Date().setDate(gameDate.getDate() + 1) ) }>{ '>' }</a>
-          <Logo />
         </p>
         { 
           scoreboard.games.map( (game: Game) => { 
+            console.log(game);
             return ( 
               <GameBox key={ game.gameId } >
                 <TeamScoreBox key={ game.awayTeam.teamId } >
-                  <img src={ `./assets/images/${ game.awayTeam.teamId }.svg` } height={ 64 } width={ 64 }/>
+                  <img src={ `./public/images/${ game.awayTeam.teamId }.svg` } />
                   <GameScoreBox>
-                    { game.awayTeam.score }
+                    { game.awayTeam.score } 
+                    <div >
+                      { game.gameLeaders.awayLeaders.name }
+                      <img src={`https://cdn.nba.com/headshots/nba/latest/260x190/${ game.gameLeaders.awayLeaders.personId }.png`}/>
+                    </div>
                   </GameScoreBox>
                 </TeamScoreBox>
   
                 <TeamScoreBox>
-                  <img src={ `./assets/images/${ game.homeTeam.teamId }.svg` } height={ 64 } width={ 64 }/>
+              <img src={ `./public/images/${ game.homeTeam.teamId }.svg` } />
                   <GameScoreBox>
                     { game.homeTeam.score }
+                    <div >
+                      { game.gameLeaders.homeLeaders.name }
+                      <img src={`https://cdn.nba.com/headshots/nba/latest/260x190/${ game.gameLeaders.homeLeaders.personId }.png`} />
+                    </div>
                   </GameScoreBox>
                 </TeamScoreBox>
               </GameBox>

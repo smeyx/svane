@@ -48,10 +48,6 @@ module.exports = ( env ) => {
           test: /\.(png|jpg|jpeg|svg)$/i,
           type: 'asset/resource',
         },
-        {
-          test: /\.svg$/i,
-          use: [ { loader: '@svgr/webpack', options: { typescript: true } }],
-        },
       ],
     },
     target: 'electron-renderer',

@@ -51,7 +51,7 @@ export type GameDuration = {
 
 export type Leaders = {
   homeLeaders: LeaderStats;
-  awayLeader: LeaderStats;
+  awayLeaders: LeaderStats;
 }
 
 export type Game = {
