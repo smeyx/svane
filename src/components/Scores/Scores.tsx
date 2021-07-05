@@ -36,6 +36,19 @@ const FillerElement = styled.div`
   flex: auto;
 `;
 
+const LogoImage = styled.img`
+  width: 48px;
+`;
+
+const PlayerImage = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+  background-color: hsl(0, 0%, 90%);
+  object-fit: cover;
+  box-shadow: inset 0 0 10px hsl(0, 0%, 70%);
+`;
+
 export const Scores: React.FC = (): ReactElement | null => {
   const [ scoreboard, setScoreboard ] = useState<Scoreboard>();
   const [ gameDate, setGameDate ] = useState<Date>(new Date());
@@ -84,23 +97,23 @@ export const Scores: React.FC = (): ReactElement | null => {
             return ( 
               <GameBox key={ game.gameId } >
                 <TeamScoreBox key={ game.awayTeam.teamId } >
-                  <img src={ `./public/images/${ game.awayTeam.teamId }.svg` } />
+                  <LogoImage src={ `./public/images/${ game.awayTeam.teamId }.svg` } />
                   <GameScoreBox>
                     { game.awayTeam.score } 
                     <div >
                       { game.gameLeaders.awayLeaders.name }
-                      <img src={`https://cdn.nba.com/headshots/nba/latest/260x190/${ game.gameLeaders.awayLeaders.personId }.png`}/>
+                      <PlayerImage src={`./public/images/203458.png`}/>
                     </div>
                   </GameScoreBox>
                 </TeamScoreBox>
   
                 <TeamScoreBox>
-              <img src={ `./public/images/${ game.homeTeam.teamId }.svg` } />
+              <LogoImage src={ `./public/images/${ game.homeTeam.teamId }.svg` } />
                   <GameScoreBox>
                     { game.homeTeam.score }
                     <div >
                       { game.gameLeaders.homeLeaders.name }
-                      <img src={`https://cdn.nba.com/headshots/nba/latest/260x190/${ game.gameLeaders.homeLeaders.personId }.png`} />
+                      <PlayerImage src={`./public/images/203458.png`} />
                     </div>
                   </GameScoreBox>
                 </TeamScoreBox>

@@ -19,7 +19,7 @@ module.exports = ( env ) => {
     plugins: [
       ...plugins,
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, 'src/index.html'),
+        template: path.resolve(__dirname, 'public/index.html'),
         title: 'NBA Scores - SVANE',
       }),
       new webpack.HotModuleReplacementPlugin(), // global HMR

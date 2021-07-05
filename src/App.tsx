@@ -18,11 +18,6 @@ const GlobalStyle = createGlobalStyle`
     background: var(--co-light);
   }
 
-  img {
-    height: 48px;
-    border-radius: 9999px;
-  }
-
 body {
   margin: 0;
   height: 100%;
