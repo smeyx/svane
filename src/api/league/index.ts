@@ -21,4 +21,9 @@ export default class League extends NbaApi {
     const response = await this.get(`/v1/${dateString}/scoreboard.json`);
     return response.json();
   }
+
+  async teamsConfig(year: number) {
+    const response = await this.get(`/${year}/teams_config.json`);
+    return response.json();
+  }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ReactElement } from "react"
-import styled from 'styled-components';
+import styled, { css  } from 'styled-components';
 import { ScoreboardV3, Scoreboard, Game } from './scores-declarations';
 import Nba from '../../api';
 import * as fs from 'fs';
@@ -21,13 +21,13 @@ const GameBox = styled.div`
 `;
 
 const TeamScoreBox = styled.div`
+  margin: 0.4em;
   display: flex;
   flex-direction: row;
   align-items: center;
 `;
 
 const GameScoreBox = styled.div`
-  margin-left: 0.5em;
   display: flex;
   flex-direction: column;
 `;
@@ -36,8 +36,12 @@ const FillerElement = styled.div`
   flex: auto;
 `;
 
-const LogoImage = styled.img`
+const LogoImage = styled.img<{ bgColor?: string }>`
   width: 48px;
+
+  ${ props => props.bgColor && css`
+    background-color: ${ props.bgColor };
+  `};
 `;
 
 const PlayerImage = styled.img`
@@ -52,13 +56,28 @@ const PlayerImage = styled.img`
 export const Scores: React.FC = (): ReactElement | null => {
   const [ scoreboard, setScoreboard ] = useState<Scoreboard>();
   const [ gameDate, setGameDate ] = useState<Date>(new Date());
+  const [ teams, setTeams ] = useState([]);
 
   const NbaApi: Nba = new Nba();
   const league = NbaApi.api('league');
 
+  const getTeamsConfig = ():void => {
+    fs.readFile(path.resolve(__dirname, '../../../../../../teams_config.json'), { encoding: 'utf8' }, ( (err, data) => {
+     if(!err) {
+       const teams = JSON.parse(data);
+       const nbaTeams = teams.teams.config.filter( (team: any) => team.ttsName);
+       setTeams(nbaTeams);
+     }
+    }));
+  }
+
+  const getBgColor = (teamId: string):string => {
+    // return teams.filter( (team: any) => team.teamId === teamId);
+    return '';
+  }
+
   const getScores = async ():Promise<void> => {
     fs.readFile(path.resolve(__dirname, '../../../../../../scoreboardv3.json'), { encoding: 'utf8' }, ( (err, data) => {
-      console.log(err);
       if(!err) {
         let scoreboard: ScoreboardV3 = JSON.parse(data);
         setScoreboard(scoreboard.scoreboard)
@@ -70,16 +89,26 @@ export const Scores: React.FC = (): ReactElement | null => {
   }
 
   useEffect( () => {
-    console.log('getting scores');
     if(!scoreboard)
       getScores();
+      getTeamsConfig();
   }, [gameDate]);
 
-  const handleDateChange = (day: number):void => { 
-    console.log(day);
-    const nextDate = new Date();
-    nextDate.setDate(day);
-    // setGameDate(nextDate);
+  // TODO: improve this stuff. makes a lot of noise.
+  const handleIncrementDate = ():void => {
+    const currentDate: Date = gameDate;
+    const newDate: Date = new Date();
+    newDate.setDate(currentDate.getDate() + 1);
+
+    setGameDate(newDate);
+  }
+  
+  const handleDecrementDate = ():void => {
+    const currentDate: Date = gameDate;
+    const newDate: Date = new Date();
+    newDate.setDate(currentDate.getDate() - 1);
+
+    setGameDate(newDate);
   }
   
   return (
@@ -88,22 +117,17 @@ export const Scores: React.FC = (): ReactElement | null => {
         <ScoresBox>
         <p>
           { gameDate.toLocaleDateString() }
-          <a onClick={ () => handleDateChange( new Date().setDate(gameDate.getDate() - 1) ) }>{ '<' }</a>
-          <a onClick={ () => handleDateChange( new Date().setDate(gameDate.getDate() + 1) ) }>{ '>' }</a>
+          <a onClick={ () => handleDecrementDate() }>{ '<' }</a>
+          <a onClick={ () => handleIncrementDate() }>{ '>' }</a>
         </p>
         { 
           scoreboard.games.map( (game: Game) => { 
-            console.log(game);
             return ( 
               <GameBox key={ game.gameId } >
                 <TeamScoreBox key={ game.awayTeam.teamId } >
                   <LogoImage src={ `./public/images/${ game.awayTeam.teamId }.svg` } />
                   <GameScoreBox>
                     { game.awayTeam.score } 
-                    <div >
-                      { game.gameLeaders.awayLeaders.name }
-                      <PlayerImage src={`./public/images/203458.png`}/>
-                    </div>
                   </GameScoreBox>
                 </TeamScoreBox>
   
@@ -111,10 +135,14 @@ export const Scores: React.FC = (): ReactElement | null => {
               <LogoImage src={ `./public/images/${ game.homeTeam.teamId }.svg` } />
                   <GameScoreBox>
                     { game.homeTeam.score }
+              { 
+                /*
                     <div >
                       { game.gameLeaders.homeLeaders.name }
                       <PlayerImage src={`./public/images/203458.png`} />
                     </div>
+                 */ 
+              }
                   </GameScoreBox>
                 </TeamScoreBox>
               </GameBox>
